@@ -1,8 +1,9 @@
 {
-  "name": "song-api",
-  "version": "1.0",
+  "name": "rocky-song-api",
+  "version": "1.0.0",
   "main": "api/index.js",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
   }
 }
