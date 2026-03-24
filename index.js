@@ -1,8 +1,8 @@
 const express = require("express");
-const axios = require("axios");
 
 const app = express();
 
+// root
 app.get("/", (req, res) => {
   res.json({
     status: "API Running ✅",
@@ -10,20 +10,25 @@ app.get("/", (req, res) => {
   });
 });
 
+// song route (Vercel safe)
 app.get("/song", async (req, res) => {
   try {
     const query = req.query.q;
     if (!query) return res.json({ error: "No query" });
 
-    // external working API (example)
-    const api = `https://api.popcat.xyz/lyrics?song=${encodeURIComponent(query)}`;
+    // 👉 static working audio (replace later if needed)
+    const songs = {
+      ashiq: "https://files.catbox.moe/2pmcyg.mp4",
+      love: "https://files.catbox.moe/2pmcyg.mp4"
+    };
 
-    const data = await axios.get(api);
+    const key = query.toLowerCase();
+    const audio = songs[key] || "https://files.catbox.moe/2pmcyg.mp4";
 
     res.json({
       title: query,
-      artist: "Unknown",
-      audio: "https://files.catbox.moe/2pmcyg.mp4" // fallback demo audio
+      artist: "Rocky",
+      audio: audio
     });
 
   } catch (e) {
