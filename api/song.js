@@ -6,15 +6,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://api.vevioz.com/api/button/mp3/${encodeURIComponent(song)}`);
-    const text = await response.text();
+    const response = await fetch(`https://yt-search-and-download-mp3.onrender.com/api/search?query=${encodeURIComponent(song)}`);
+    const data = await response.json();
+
+    if (!data || !data.downloadUrl) {
+      return res.status(404).json({ error: "Song not found" });
+    }
 
     res.status(200).json({
-      title: song,
-      audio: text
+      title: data.title,
+      audio: data.downloadUrl
     });
 
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch audio" });
+    res.status(500).json({ error: "API failed" });
   }
 }
