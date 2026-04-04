@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 🔥 Demo: free public API (yt search)
+    // 🔍 YouTube search API
     const search = await fetch(`https://apis-samir.onrender.com/ytsearch?query=${encodeURIComponent(name)}`);
     const data = await search.json();
 
@@ -20,9 +20,9 @@ export default async function handler(req, res) {
 
     const video = data.result[0];
 
-    // audio convert api
-    const audioApi = await fetch(`https://apis-samir.onrender.com/ytmp3?url=${video.url}`);
-    const audioData = await audioApi.json();
+    // 🎧 convert to mp3
+    const audio = await fetch(`https://apis-samir.onrender.com/ytmp3?url=${video.url}`);
+    const audioData = await audio.json();
 
     return res.status(200).json({
       title: video.title,
@@ -31,8 +31,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     return res.status(500).json({
-      error: "Server error",
-      details: err.message
+      error: err.message
     });
   }
 }
