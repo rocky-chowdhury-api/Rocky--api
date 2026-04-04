@@ -5,11 +5,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "No song provided" });
   }
 
-  // ⚠️ এখানে তুমি নিজের source বসাবে (example dummy)
-  const audioUrl = `https://example.com/${song}.mp3`;
+  try {
+    const response = await fetch(`https://api.vevioz.com/api/button/mp3/${encodeURIComponent(song)}`);
+    const text = await response.text();
 
-  res.status(200).json({
-    title: song,
-    audio: audioUrl
-  });
+    res.status(200).json({
+      title: song,
+      audio: text
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch audio" });
+  }
 }
