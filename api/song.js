@@ -1,35 +1,38 @@
-const yts = require("yt-search");
-const ytdl = require("@distube/ytdl-core");
-
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   try {
-    const query = req.query.query;
+    const { name } = req.query;
 
-    if (!query) {
+    if (!name) {
       return res.status(400).json({
-        error: "query lagbe"
+        error: "Song name required"
       });
     }
 
-    const search = await yts(query);
-    const video = search.videos[0];
+    // 🔥 Demo: free public API (yt search)
+    const search = await fetch(`https://apis-samir.onrender.com/ytsearch?query=${encodeURIComponent(name)}`);
+    const data = await search.json();
 
-    if (!video) {
+    if (!data.result || data.result.length === 0) {
       return res.status(404).json({
-        error: "song pawa jai nai"
+        error: "Song not found"
       });
     }
 
-    const stream = ytdl(video.url, {
-      filter: "audioonly"
+    const video = data.result[0];
+
+    // audio convert api
+    const audioApi = await fetch(`https://apis-samir.onrender.com/ytmp3?url=${video.url}`);
+    const audioData = await audioApi.json();
+
+    return res.status(200).json({
+      title: video.title,
+      url: audioData.result.download
     });
 
-    res.setHeader("Content-Type", "audio/mpeg");
-    stream.pipe(res);
-
-  } catch (e) {
-    res.status(500).json({
-      error: e.message
+  } catch (err) {
+    return res.status(500).json({
+      error: "Server error",
+      details: err.message
     });
   }
-};
+}
