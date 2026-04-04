@@ -6,16 +6,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://yt-search-and-download-mp3.onrender.com/api/search?query=${encodeURIComponent(song)}`);
+    const response = await fetch(`https://api.popcat.xyz/music?q=${encodeURIComponent(song)}`);
     const data = await response.json();
 
-    if (!data || !data.downloadUrl) {
+    if (!data || !data.url) {
       return res.status(404).json({ error: "Song not found" });
     }
 
     res.status(200).json({
       title: data.title,
-      audio: data.downloadUrl
+      audio: data.url
     });
 
   } catch (err) {
